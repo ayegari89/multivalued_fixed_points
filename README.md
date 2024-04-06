@@ -32,13 +32,13 @@ mkdir fixed_points
 
 cd fixed_points
 
-git clone git@bitbucket.org:ayegari89/tesis.git
+git clone git@github.com:ayegari89/multivalued_fixed_points.git
 
 Install requirements
 
 conda install pip
 
-cd tesis
+cd multivalued_fixed_points
 
 pip install -r requirements.txt 
 
@@ -94,7 +94,7 @@ sudo make install
 
 cd ../..
 
-cd tesis/
+cd multivalued_fixed_points/
 
 git clone https://repo.or.cz/barvinok.git
 
@@ -114,7 +114,7 @@ make
 
 sudo make install
 
-How to run
+# How to run
 
 cd ..
 
