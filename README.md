@@ -2,9 +2,13 @@
 
 This instructions are made for an Ubuntu installation
 
+## Prerequisites
+
 Conda enviroment
 
-Install miniconda
+autoconf libtool automake (sudo apt install autoconf libtool automake) 
+
+### Install miniconda
 
 mkdir -p ~/miniconda3
 
@@ -14,19 +18,18 @@ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 
 rm -rf ~/miniconda3/miniconda.sh
 
-
-
 ~/miniconda3/bin/conda init bash
 
-y abrir una nueva consola
+y open new console windows
 
-Create enviroment
+
+## Create Conda enviroment
 
 conda create --name fixed_points python=3.11
 
 conda activate fixed_points
 
-Download project
+## Download project
 
 mkdir fixed_points
 
@@ -34,7 +37,7 @@ cd fixed_points
 
 git clone git@github.com:ayegari89/multivalued_fixed_points.git
 
-Install requirements
+## Install requirements
 
 conda install pip
 
@@ -42,11 +45,8 @@ cd multivalued_fixed_points
 
 pip install -r requirements.txt 
 
-sudo apt install autoconf libtool automake
 
-
-
-Install requirements for Barvinok (we need to install glpk, gmp and ntl)
+## Install requirements for Barvinok (we need to install glpk, gmp and ntl)
 
 cd ..
 
