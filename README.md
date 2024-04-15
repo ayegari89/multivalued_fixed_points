@@ -1,14 +1,14 @@
 # multivalued_fixed_points
 
-This instructions are made for an Ubuntu installation
+This instructions are made based on an Ubuntu installation. They are a list of commands required to run in a Bash console.
 
-## Prerequisites
+## General system prerequisites
 
-Conda enviroment
+autoconf libtool automake (if not installed, could be installed with: sudo apt install autoconf libtool automake) 
 
-autoconf libtool automake (sudo apt install autoconf libtool automake) 
+Conda (if not installed, could be installed as miniconda, as suggested in next section)
 
-### Install miniconda
+### Install miniconda (optional, if Conda is not installed)
 
 mkdir -p ~/miniconda3
 
@@ -20,10 +20,10 @@ rm -rf ~/miniconda3/miniconda.sh
 
 ~/miniconda3/bin/conda init bash
 
-y open new console windows
+and open a new console window before next steps.
 
 
-## Create Conda enviroment
+## Create Conda environment
 
 conda create --name fixed_points python=3.11
 
@@ -31,11 +31,15 @@ conda activate fixed_points
 
 ## Download project
 
+BASE_DIR=~ #you can change the BASE_DIR to fit your preference
+
+cd $BASE_DIR
+
 mkdir fixed_points
 
 cd fixed_points
 
-git clone git@github.com:ayegari89/multivalued_fixed_points.git
+git clone git@github.com:ayegari89/multivalued_fixed_points.git #this uses ssh for downloading from github. you can use other means to download the project, but make sure to preserve the same directory structure that would have been using git clone.
 
 ## Install requirements
 
@@ -116,7 +120,9 @@ sudo make install
 
 # How to run
 
-cd ..
+BASE_DIR=~ #you can change the BASE_DIR to fit your preference (make it consistent with the installation)
+
+cd $BASE_DIR/fixed_points/multivalued_fixed_points
 
 python frontend.py
 
