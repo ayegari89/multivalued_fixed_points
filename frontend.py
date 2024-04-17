@@ -120,7 +120,7 @@ class MatrixProcessorApp(QWidget):
         self.entry_matrix.itemChanged.connect(self.on_matrix_item_changed)
 
         # Set up the main window
-        self.setWindowTitle("Multivalued fixed points")
+        self.setWindowTitle("Fixed points of MV networks")
         self.setGeometry(100, 100, 800, 400)
 
         self.help_window = HelpWindow()
@@ -185,7 +185,7 @@ class MatrixProcessorApp(QWidget):
         if not result:
             return "There are no solutions"
         elif len(result) == 1:
-            return f"There is 1 solution: {self.pretty_print(m, result[0])}"
+            return f"There is 1 solution: ({self.pretty_print(m, result[0])})"
         else:
             return f"There are {len(result)} solutions: <ul> {' '.join(f'<li>({self.pretty_print(m, sol)})</li>' for sol in result)}</ul>"
 
