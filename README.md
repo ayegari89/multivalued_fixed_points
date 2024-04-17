@@ -120,6 +120,8 @@ sudo make install
 
 # How to run
 
+conda activate fixed_points #make sure you are in the conda environment that we created to run the program
+
 BASE_DIR=~ #you can change the BASE_DIR to fit your preference (make it consistent with the installation)
 
 cd $BASE_DIR/fixed_points/multivalued_fixed_points
