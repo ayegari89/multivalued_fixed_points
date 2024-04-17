@@ -33,7 +33,7 @@ class HelpWindow(QWidget):
 
     def display_latex_formula(self):
         # Load the GIF image of the LaTeX formula
-        gif_path = './help_window.png'  # Replace with the path to your GIF image
+        gif_path = './help_windows.png'  # Replace with the path to your GIF image
         movie = QMovie(gif_path)
         self.formula_label.setMovie(movie)
         movie.start()
