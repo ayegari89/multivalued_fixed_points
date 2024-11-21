@@ -52,10 +52,14 @@ class MatrixProcessorApp(QWidget):
         self.m_label = QLabel("Enter Integer m:")
         self.entry_m = QLineEdit(self)
         self.entry_m.setMaximumWidth(50)
+        self.number_of_rows_label = QLabel("Enter number of rows")
+        self.number_of_rows = QLineEdit(self)
+        self.number_of_rows.setMaximumWidth(50)
+
         self.submit_button = QPushButton("Submit", self)
         self.result_label = QTextEdit("")
         self.result_label.setReadOnly(True)
-        self.result_label.setFont(QFont('Arial', 50))
+        self.result_label.setFont(QFont('Arial', 20))
 
         # Loading animation
         self.loading_bar = QProgressBar(self)
@@ -66,50 +70,33 @@ class MatrixProcessorApp(QWidget):
         matrix_layout.addWidget(self.matrix_label)
         matrix_layout.addWidget(self.entry_matrix)
 
-        button_layout = QHBoxLayout()
-        add_row_button = QPushButton("Add Row", self)
-        add_row_button.setToolTip("Add Row (Ctrl+R)")
-        add_row_button.setShortcut("Ctrl+R")
-        add_row_button.clicked.connect(self.add_row)
-        button_layout.addWidget(add_row_button)
-
-        remove_row_button = QPushButton("Remove Row", self)
-        remove_row_button.setToolTip("Remove Row (Ctrl+Shift+R)")
-        remove_row_button.setShortcut("Ctrl+Shift+R")
-        remove_row_button.clicked.connect(self.remove_row)
-        button_layout.addWidget(remove_row_button)
-
-        add_col_button = QPushButton("Add Column", self)
-        add_col_button.setToolTip("Add Column (Ctrl+C)")
-        add_col_button.setShortcut("Ctrl+C")
-        add_col_button.clicked.connect(self.add_column)
-        button_layout.addWidget(add_col_button)
-
-        remove_col_button = QPushButton("Remove Column", self)
-        remove_col_button.setToolTip("Remove Column (Ctrl+Shift+C)")
-        remove_col_button.setShortcut("Ctrl+Shift+C")
-        remove_col_button.clicked.connect(self.remove_column)
-        button_layout.addWidget(remove_col_button)
+        help_button_layout = QHBoxLayout()
+        #self.old_buttons(help_button_layout)
 
         help_button = QPushButton("Help", self)
         help_button.setToolTip("Help (Ctrl+H)")
         help_button.setShortcut("Ctrl+H")
         help_button.clicked.connect(self.open_help_window)
-        button_layout.addWidget(help_button)
+        help_button_layout.addWidget(help_button)
+        input_rows_layout = QVBoxLayout()
 
-        matrix_layout.addLayout(button_layout)
+        input_rows_layout.addWidget(self.number_of_rows_label)
+        input_rows_layout.addWidget(self.number_of_rows)
 
-        input_layout = QVBoxLayout()
-        input_layout.addWidget(self.m_label)
-        input_layout.addWidget(self.entry_m)
+        input_m_layout = QVBoxLayout()
+        input_m_layout.addWidget(self.m_label)
+        input_m_layout.addWidget(self.entry_m)
 
         main_layout = QVBoxLayout(self)
+        main_layout.addLayout(input_m_layout)
+        main_layout.addLayout(input_rows_layout)
+
         main_layout.addLayout(matrix_layout)
-        main_layout.addLayout(input_layout)
 
         main_layout.addWidget(self.submit_button)
         main_layout.addWidget(self.result_label)
         main_layout.addWidget(self.loading_bar)
+        main_layout.addLayout(help_button_layout)
 
         self.setLayout(main_layout)
 
@@ -119,12 +106,36 @@ class MatrixProcessorApp(QWidget):
         # Connect the itemChanged signal to the on_matrix_item_changed method
         self.entry_matrix.itemChanged.connect(self.on_matrix_item_changed)
 
+        self.number_of_rows.editingFinished.connect(self.number_of_rows_changed)
+
         # Set up the main window
         self.setWindowTitle("Fixed points of MV networks")
         self.setGeometry(100, 100, 800, 400)
 
         self.help_window = HelpWindow()
         self.show()
+
+    def old_buttons(self, button_layout):
+        add_row_button = QPushButton("Add Row", self)
+        add_row_button.setToolTip("Add Row (Ctrl+R)")
+        add_row_button.setShortcut("Ctrl+R")
+        add_row_button.clicked.connect(self.add_row)
+        button_layout.addWidget(add_row_button)
+        remove_row_button = QPushButton("Remove Row", self)
+        remove_row_button.setToolTip("Remove Row (Ctrl+Shift+R)")
+        remove_row_button.setShortcut("Ctrl+Shift+R")
+        remove_row_button.clicked.connect(self.remove_row)
+        button_layout.addWidget(remove_row_button)
+        add_col_button = QPushButton("Add Column", self)
+        add_col_button.setToolTip("Add Column (Ctrl+C)")
+        add_col_button.setShortcut("Ctrl+C")
+        add_col_button.clicked.connect(self.add_column)
+        button_layout.addWidget(add_col_button)
+        remove_col_button = QPushButton("Remove Column", self)
+        remove_col_button.setToolTip("Remove Column (Ctrl+Shift+C)")
+        remove_col_button.setShortcut("Ctrl+Shift+C")
+        remove_col_button.clicked.connect(self.remove_column)
+        button_layout.addWidget(remove_col_button)
 
     def open_help_window(self):
         self.help_window.show()
@@ -173,11 +184,11 @@ class MatrixProcessorApp(QWidget):
         integer2 = self.validate_integer_input(self.entry_m.text())
 
         if matrix is None or integer2 is None:
-            self.show_error("Please enter valid integers.")
+            self.show_error("""Only integer numbers are accepted,
+                                   or fractions with m as denominator in last column of the matrix.""")
             return
 
         result = self.pretty_print_result(integer2, self.process_input(np.array(matrix), integer2))
-        print("klala", result)
         self.result_label.setText(f"{result}")
         self.loading_bar.setVisible(False)
 
@@ -192,8 +203,7 @@ class MatrixProcessorApp(QWidget):
     def pretty_print(self, m, solution):
         return ", ".join(self.pretty_print_element(m, element) for element in solution.split(","))
 
-    def pretty_print_element(self, m,  element):
-        print(element)
+    def pretty_print_element(self, m, element):
         if int(element) == 0:
             return "0"
         elif int(element) == m:
@@ -201,17 +211,35 @@ class MatrixProcessorApp(QWidget):
         else:
             return f"{element}/{m}"
 
-
     def on_matrix_item_changed(self, item):
         # Update the value of the matrix item when changed
         if not self.validate_matrix_item(item):
             self.show_invalid_input_message()
 
+    def number_of_rows_changed(self):
+        text = self.number_of_rows.text()
+        if not self.is_valid_integer(text):
+            self.show_error("Please enter valid integers.")
+            self.number_of_rows.setText(str(self.entry_matrix.rowCount()))
+            return False
+        self.entry_matrix.setRowCount(0)
+        self.entry_matrix.setColumnCount(0)
+        for row in range(self.rows()):
+            self.add_row()
+            self.add_column()
+        self.add_column()
+        return True
+
+    def rows(self):
+        return int(self.number_of_rows.text())
+
     def validate_matrix_item(self, item):
         # Validate and update the matrix item content
         text = item.text()
-        if not self.is_valid_integer(text):
+        if item.column() != self.rows() and not self.is_valid_integer(text):
             item.setText("0")
+            return False
+        if item.column() == self.rows() and not self.is_valid_fraction_or_integer(text):
             return False
         return True
 
@@ -219,13 +247,19 @@ class MatrixProcessorApp(QWidget):
         matrix_values = []
         for row in range(self.entry_matrix.rowCount()):
             row_values = []
-            for col in range(self.entry_matrix.columnCount()):
+            for col in range(self.entry_matrix.columnCount()-1):
                 item_text = self.entry_matrix.item(row, col).text()
                 if not self.is_valid_integer(item_text):
                     return None
                 row_values.append(int(item_text))
+            item_text = self.entry_matrix.item(row, self.entry_matrix.columnCount()-1).text()
+            if not self.is_valid_fraction_or_integer(item_text):
+                return None
+            if self.is_valid_integer(item_text):
+                row_values.append(int(item_text) * int(self.entry_m.text()))
+            else:
+                row_values.append(int(item_text.split("/")[0]))
             matrix_values.append(row_values)
-        print("matrix_values", matrix_values)
         return matrix_values
 
     def validate_integer_input(self, text):
@@ -240,17 +274,37 @@ class MatrixProcessorApp(QWidget):
         except ValueError:
             return False
 
-    def show_error(self, message):
-        error_dialog = QInputDialog(self)
-        error_dialog.setInputMode(QInputDialog.TextInput)
-        error_dialog.setWindowTitle("Error")
-        error_dialog.setLabelText(message)
-        error_dialog.exec_()
+    def is_valid_fraction_or_integer(self, text):
+        if self.is_valid_integer(text):
+            return True
 
-    def show_invalid_input_message(self):
+        a = text.split("/")
+        if len(a)!=2:
+            return False
+        if not self.is_valid_integer(a[0]):
+            return False
+        if not self.is_valid_integer(a[1]):
+            return False
+        if int(a[1]) != int(self.entry_m.text()):
+            return False
+        return True
+
+
+    def show_error(self, message):
+        self.show_invalid_input_message(message)
+        #return
+        #error_dialog = QLabel(self)
+        #error_dialog.setInputMode(QLabel.TextInput)
+        #error_dialog.setWindowTitle("Error")
+        #error_dialog.setLabelText(message)
+        #error_dialog.exec_()
+
+    def show_invalid_input_message(self,
+                                   message="""Only integer numbers are accepted in the matrix,
+                                   or fractions with m as denominator in last column."""):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Warning)
-        msg_box.setText("Only integer numbers are accepted in the matrix.")
+        msg_box.setText(message)
         msg_box.setWindowTitle("Invalid Input")
         msg_box.exec_()
 
